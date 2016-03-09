@@ -10,18 +10,6 @@ public class MainActivity extends Activity {
     private TetrisGLSurfaceView surfaceView;
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        surfaceView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        surfaceView.onPause();
-    }
-
-    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && surfaceView != null) {
