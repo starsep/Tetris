@@ -29,7 +29,7 @@ public class TetrisBlock {
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
     public TetrisBlock(float red, float green, float blue, float alpha) {
-        color = new float[] {red, green, blue, alpha};
+        color = new float[]{red, green, blue, alpha};
 
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(

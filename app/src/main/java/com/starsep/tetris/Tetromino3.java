@@ -6,8 +6,8 @@ public abstract class Tetromino3 extends Tetromino {
         super();
     }
 
-    private static int[] cornerSwapsCoords = new int[] {0, 0, 0, 2, 2, 2, 2, 0};
-    private static int[] edgeSwapsCoords = new int[] {0, 1, 1, 2, 2, 1, 1, 0};
+    private static int[] cornerSwapsCoords = new int[]{0, 0, 0, 2, 2, 2, 2, 0};
+    private static int[] edgeSwapsCoords = new int[]{0, 1, 1, 2, 2, 1, 1, 0};
 
     @Override
     public void rotate(boolean left) {

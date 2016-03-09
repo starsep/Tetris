@@ -12,7 +12,7 @@ public class TetrominoS extends Tetromino3 {
         return block;
     }
 
-    private final static int[] coords = new int[] {0, 1, 1, 1, 1, 2, 2, 2};
+    private final static int[] coords = new int[]{0, 1, 1, 1, 1, 2, 2, 2};
 
     @Override
     public int[] coords() {
