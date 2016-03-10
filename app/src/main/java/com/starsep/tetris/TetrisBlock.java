@@ -9,9 +9,9 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 public class TetrisBlock {
-    private final FloatBuffer vertexBuffer;
-    private final ShortBuffer drawListBuffer;
-    private final int mProgram;
+    private static FloatBuffer vertexBuffer;
+    private static ShortBuffer drawListBuffer;
+    private static int mProgram = -1;
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
@@ -31,36 +31,38 @@ public class TetrisBlock {
     public TetrisBlock(float red, float green, float blue, float alpha) {
         color = new float[]{red, green, blue, alpha};
 
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 4 bytes per float)
-                squareCoords.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(squareCoords);
-        vertexBuffer.position(0);
+        if (mProgram == -1) {
+            // initialize vertex byte buffer for shape coordinates
+            ByteBuffer bb = ByteBuffer.allocateDirect(
+                    // (# of coordinate values * 4 bytes per float)
+                    squareCoords.length * 4);
+            bb.order(ByteOrder.nativeOrder());
+            vertexBuffer = bb.asFloatBuffer();
+            vertexBuffer.put(squareCoords);
+            vertexBuffer.position(0);
 
-        // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 2 bytes per short)
-                drawOrder.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
+            // initialize byte buffer for the draw list
+            ByteBuffer dlb = ByteBuffer.allocateDirect(
+                    // (# of coordinate values * 2 bytes per short)
+                    drawOrder.length * 2);
+            dlb.order(ByteOrder.nativeOrder());
+            drawListBuffer = dlb.asShortBuffer();
+            drawListBuffer.put(drawOrder);
+            drawListBuffer.position(0);
 
-        // prepare shaders and OpenGL program
-        int vertexShader = TetrisRenderer.loadShader(
-                GLES20.GL_VERTEX_SHADER,
-                ResourceReader.get(R.raw.normal_vertex));
-        int fragmentShader = TetrisRenderer.loadShader(
-                GLES20.GL_FRAGMENT_SHADER,
-                ResourceReader.get(R.raw.normal_fragment));
+            // prepare shaders and OpenGL program
+            int vertexShader = TetrisRenderer.loadShader(
+                    GLES20.GL_VERTEX_SHADER,
+                    ResourceReader.get(R.raw.normal_vertex));
+            int fragmentShader = TetrisRenderer.loadShader(
+                    GLES20.GL_FRAGMENT_SHADER,
+                    ResourceReader.get(R.raw.normal_fragment));
 
-        mProgram = GLES20.glCreateProgram();             // create empty OpenGL Program
-        GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
-        GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
-        GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
+            mProgram = GLES20.glCreateProgram();             // create empty OpenGL Program
+            GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
+            GLES20.glAttachShader(mProgram, fragmentShader); // add the fragment shader to program
+            GLES20.glLinkProgram(mProgram);                  // create OpenGL program executables
+        }
     }
 
     /**

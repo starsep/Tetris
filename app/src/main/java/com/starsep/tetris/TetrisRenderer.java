@@ -9,7 +9,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class TetrisRenderer implements GLSurfaceView.Renderer {
-
+    private static TetrisRenderer instance = new TetrisRenderer();
     private static final String TAG = "TetrisRenderer";
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
@@ -17,12 +17,16 @@ public class TetrisRenderer implements GLSurfaceView.Renderer {
     private final float[] ProjectionMatrix = new float[16];
     private final float[] ViewMatrix = new float[16];
 
+    private TetrisRenderer() {
+        super();
+    }
+
     private TetrisBoard board;
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.5f, 0.2f, 0.1f, 1.0f);
-        board = new TetrisBoard();
+        board = TetrisBoard.board();
     }
 
     @Override
@@ -92,7 +96,7 @@ public class TetrisRenderer implements GLSurfaceView.Renderer {
         Log.d(TAG, "MATRIX END");
     }
 
-    public void onClick() {
-        board.onClick();
+    public static GLSurfaceView.Renderer renderer() {
+        return instance;
     }
 }

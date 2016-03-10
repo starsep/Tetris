@@ -1,7 +1,9 @@
 package com.starsep.tetris;
 
 import android.opengl.Matrix;
+import android.util.Log;
 
+import java.sql.Time;
 import java.util.Random;
 
 public class TetrisBoard {
@@ -15,8 +17,9 @@ public class TetrisBoard {
     private int counter = 0;
     private boolean clicked = false;
     private Random tmpRandom;
+    private long last = 0;
 
-    public TetrisBoard() {
+    private TetrisBoard() {
         tmpRandom = new Random();
         blocks = new TetrisBlock[WIDTH][];
         for (int i = 0; i < WIDTH; i++) {
@@ -28,18 +31,22 @@ public class TetrisBoard {
         setRandom();
     }
 
-    private void rotate() {
-        clear();
-        currentHeight--;
-        if (currentHeight < 0) {
-            currentHeight = 16;
-        }
+    private static TetrisBoard instance = new TetrisBoard();
+
+    public static TetrisBoard board() {
+        return instance;
+    }
+
+    private void update() {
         TetrisBlock[][] currentBlocks = current.getBlocks();
         for (int i = 0; i < currentBlocks.length; i++) {
             for (int j = 0; j < currentBlocks[i].length; j++) {
                 blocks[currentWidth + i][currentHeight + j] = currentBlocks[i][j];
             }
         }
+    }
+
+    private void rotate() {
         current.rotate(false);
     }
 
@@ -59,20 +66,19 @@ public class TetrisBoard {
         current = TetrominoRandom.get();
     }
 
-    private void update() {
+    private void debug() {
         if (counter % 100 == 0 || clicked) {
             counter = 0;
             clicked = false;
             setRandom();
-            currentWidth += tmpRandom.nextInt(3) - 1;
-            if (currentWidth < 0) {
-                currentWidth = 0;
-            }
-            if (currentWidth > 6) {
-                currentWidth = 6;
-            }
+            /*if (tmpRandom.nextInt(2) == 0) {
+                left();
+            } else {
+                right();
+            }*/
         }
         if (counter % 20 == 0) {
+            down();
             rotate();
         }
     }
@@ -80,6 +86,7 @@ public class TetrisBoard {
     public void draw(float[] VPMatrix) {
         float[] model = new float[16];
         float[] MVPMatrix = new float[16];
+        //last = System.currentTimeMillis();
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 0; j < HEIGHT; j++) {
                 Matrix.setIdentityM(model, 0);
@@ -89,11 +96,46 @@ public class TetrisBoard {
                 blocks[i][j].draw(MVPMatrix);
             }
         }
+        //Log.d("Time:", String.valueOf(System.currentTimeMillis() - last));
+        //last = System.currentTimeMillis();
         counter++;
-        update();
+        debug();
     }
 
     public void onClick() {
         clicked = true;
+    }
+
+    public void left() {
+        clear();
+        currentWidth--;
+        if (currentWidth < 0) {
+            currentWidth = 0;
+        }
+        update();
+    }
+
+    public void right() {
+        clear();
+        currentWidth++;
+        if (currentWidth > 6) {
+            currentWidth = 6;
+        }
+        update();
+    }
+
+    public void down() {
+        clear();
+        currentHeight--;
+        if (currentHeight < 0) {
+            currentHeight = 16;
+        }
+        update();
+    }
+
+    public void top() {
+        clear();
+        currentHeight = 0;
+        update();
     }
 }
