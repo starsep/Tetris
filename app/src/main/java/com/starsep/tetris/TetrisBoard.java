@@ -73,7 +73,7 @@ public class TetrisBoard {
     }
 
     private void spawnRandom() {
-        current = TetrominoRandom.get();
+        current = Tetromino.getRandom();
         currentWidth = 6;
         currentHeight = 20;
         update();

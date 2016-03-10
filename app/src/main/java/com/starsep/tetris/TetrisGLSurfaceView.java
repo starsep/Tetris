@@ -52,7 +52,7 @@ public class TetrisGLSurfaceView extends GLSurfaceView {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-            Log.d("LEL", "42");
+            //Log.d("LEL", "42");
             boolean result = false;
             try {
                 float diffY = event2.getY() - event1.getY();
