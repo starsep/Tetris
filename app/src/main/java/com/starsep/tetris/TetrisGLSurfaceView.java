@@ -14,8 +14,8 @@ public class TetrisGLSurfaceView extends GLSurfaceView {
     private int mAspectRatioWidth = 1;
     private int mAspectRatioHeight = 2;
 
-    public TetrisGLSurfaceView(Context context) {
-        super(context);
+    public TetrisGLSurfaceView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         setEGLContextClientVersion(2);
         setRenderer(TetrisRenderer.renderer());
         //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
@@ -23,11 +23,6 @@ public class TetrisGLSurfaceView extends GLSurfaceView {
         gestureListener = new GestureListener();
         gestureDetector = new GestureDetectorCompat(context, gestureListener);
         gestureDetector.setOnDoubleTapListener(gestureListener);
-    }
-
-    public TetrisGLSurfaceView(Context context, AttributeSet attrs) {
-        //super(context, attrs);
-        this(context);
     }
 
     @Override
