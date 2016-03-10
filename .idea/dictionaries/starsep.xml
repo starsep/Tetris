@@ -2,6 +2,7 @@
   <dictionary name="starsep">
     <words>
       <w>coords</w>
+      <w>shaders</w>
       <w>tetris</w>
       <w>tetromino</w>
       <w>widht</w>

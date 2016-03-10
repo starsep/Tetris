@@ -107,6 +107,7 @@ public abstract class Tetromino {
 
     private static int[] cornerSwapsCoords = new int[]{0, 0, 0, 2, 2, 2, 2, 0};
     private static int[] edgeSwapsCoords = new int[]{0, 1, 1, 2, 2, 1, 1, 0};
+
     private abstract static class Tetromino3 extends Tetromino {
         public Tetromino3() {
             super();
@@ -195,7 +196,7 @@ public abstract class Tetromino {
     };
 
     private final static TetrisBlock blockO = new TetrisBlock(1.0f, 1.0f, 0.0f, 1.0f);
-    private final static int[] coordsO = new int[] {0, 0, 0, 1, 1, 0, 1, 1};
+    private final static int[] coordsO = new int[]{0, 0, 0, 1, 1, 0, 1, 1};
     private final static Tetromino O = new Tetromino() {
         @Override
         protected void rotateRight() {

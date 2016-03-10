@@ -4,10 +4,8 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 
 public class TetrisGLSurfaceView extends GLSurfaceView {
 

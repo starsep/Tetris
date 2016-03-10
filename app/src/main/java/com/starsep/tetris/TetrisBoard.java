@@ -197,8 +197,7 @@ public class TetrisBoard {
                     }
                 }
             }
-        }
-        catch (IndexOutOfBoundsException unused) {
+        } catch (IndexOutOfBoundsException unused) {
             return true;
         }
         return false;

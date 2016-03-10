@@ -1,7 +1,6 @@
 package com.starsep.tetris;
 
 import android.opengl.GLES20;
-import android.opengl.Matrix;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -77,7 +76,7 @@ public class TetrisBlock {
         GLES20.glUseProgram(mProgram);
 
         // get handle to vertex shader's vPosition member
-        GLES20.glGetAttribLocation(mProgram, "vPosition");
+        mPositionHandle = GLES20.glGetAttribLocation(mProgram, "vPosition");
 
         // Enable a handle to the triangle vertices
         GLES20.glEnableVertexAttribArray(mPositionHandle);
@@ -132,11 +131,13 @@ public class TetrisBlock {
     }
 
     private final static TetrisBlock wall = new TetrisBlockNoDraw();
+
     public static TetrisBlock wall() {
         return wall;
     }
 
     private final static TetrisBlock empty = new TetrisBlockNoDraw();
+
     public static TetrisBlock empty() {
         return empty;
     }

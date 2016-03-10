@@ -2,18 +2,10 @@ package com.starsep.tetris;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.view.GestureDetectorCompat;
 import android.view.View;
 import android.view.WindowManager;
 
 public class MainActivity extends Activity {
-
-    private TetrisGLSurfaceView surfaceView;
-    private Handler handler;
-    private Runnable renderRun;
-
-    //private final static String DEBUG_TAG = "MainActivity:";
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -44,21 +36,7 @@ public class MainActivity extends Activity {
         setMaximumBrightness();
 
         ResourceReader.assign(this);
-        surfaceView = new TetrisGLSurfaceView(this);
-        //setContentView(surfaceView);
         setContentView(R.layout.main_activity);
-
-        /*renderRun = new Runnable() {
-            @Override
-            public void run() {
-                surfaceView.requestRender();
-                handler.postDelayed(this, 30);
-            }
-        };
-
-        handler = new Handler();
-        handler.postDelayed(renderRun, 30);*/
-
     }
 }
 
