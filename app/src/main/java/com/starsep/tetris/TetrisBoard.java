@@ -188,14 +188,19 @@ public class TetrisBoard {
     }
 
     private boolean collisionRotation() {
-        TetrisBlock[][] currentBlocks = current.getBlocks();
-        for (int i = 0; i < currentBlocks.length; i++) {
-            for (int j = 0; j < currentBlocks[i].length; j++) {
-                if (currentBlocks[i][j] != TetrisBlockEmpty.get() &&
-                        blocks[i + currentWidth][i + currentHeight] != TetrisBlockEmpty.get()) {
-                    return true;
+        try {
+            TetrisBlock[][] currentBlocks = current.getBlocks();
+            for (int i = 0; i < currentBlocks.length; i++) {
+                for (int j = 0; j < currentBlocks[i].length; j++) {
+                    if (currentBlocks[i][j] != TetrisBlockEmpty.get() &&
+                            blocks[i + currentWidth][i + currentHeight] != TetrisBlockEmpty.get()) {
+                        return true;
+                    }
                 }
             }
+        }
+        catch (IndexOutOfBoundsException unused) {
+            return true;
         }
         return false;
     }
