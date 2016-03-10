@@ -20,7 +20,6 @@ public class TetrisBoard {
             blocks[i] = new TetrisBlock[HEIGHT + HEIGHT_HIDDEN];
         }
         clearBoard();
-        //blocks[3][3] = new TetrisBlock(1.0f, 0.3f, 0.5f, 1.0f);
         spawnRandom();
     }
 
@@ -74,8 +73,8 @@ public class TetrisBoard {
 
     private void spawnRandom() {
         current = Tetromino.getRandom();
-        currentWidth = 6;
-        currentHeight = 20;
+        currentWidth = (WIDTH - current.size()) / 2;
+        currentHeight = HEIGHT;
         update();
         if (collisionDown()) {
             clearBoard();

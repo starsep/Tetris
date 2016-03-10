@@ -70,10 +70,9 @@ public abstract class Tetromino {
                 return S;
             case 5:
                 return T;
-            case 6:
+            default:
                 return Z;
         }
-        return null;
     }
 
     private final static int[] middleSwapsCoords = new int[]{1, 1, 2, 1, 2, 2, 1, 2};
