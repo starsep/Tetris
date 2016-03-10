@@ -26,9 +26,9 @@ public class TetrisBoard {
     private void clearBoard() {
         for (int i = 0; i < WIDTH; i++) {
             for (int j = 1; j < HEIGHT + HEIGHT_HIDDEN; j++) {
-                blocks[i][j] = TetrisBlockEmpty.get();
+                blocks[i][j] = TetrisBlock.empty();
             }
-            blocks[i][0] = TetrisBlockWall.get();
+            blocks[i][0] = TetrisBlock.wall();
         }
     }
 
@@ -42,7 +42,7 @@ public class TetrisBoard {
         TetrisBlock[][] currentBlocks = current.getBlocks();
         for (int i = 0; i < currentBlocks.length; i++) {
             for (int j = 0; j < currentBlocks[i].length; j++) {
-                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                if (currentBlocks[i][j] != TetrisBlock.empty()) {
                     blocks[currentWidth + i][currentHeight + j] = currentBlocks[i][j];
                 }
             }
@@ -63,8 +63,8 @@ public class TetrisBoard {
             TetrisBlock[][] currentBlocks = current.getBlocks();
             for (int i = 0; i < currentBlocks.length; i++) {
                 for (int j = 0; j < currentBlocks[i].length; j++) {
-                    if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
-                        blocks[currentWidth + i][currentHeight + j] = TetrisBlockEmpty.get();
+                    if (currentBlocks[i][j] != TetrisBlock.empty()) {
+                        blocks[currentWidth + i][currentHeight + j] = TetrisBlock.empty();
                     }
                 }
             }
@@ -135,10 +135,10 @@ public class TetrisBoard {
         TetrisBlock[][] currentBlocks = current.getBlocks();
         for (int i = 0; i < currentBlocks.length; i++) {
             for (int j = 0; j < currentBlocks[i].length; j++) {
-                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                if (currentBlocks[i][j].isNotEmpty()) {
                     boolean downNotEmpty = ((j == 0) ||
-                            (currentBlocks[i][j - 1] == TetrisBlockEmpty.get())) &&
-                            blocks[i + currentWidth][j - 1 + currentHeight] != TetrisBlockEmpty.get();
+                            (currentBlocks[i][j - 1].isEmpty())) &&
+                            blocks[i + currentWidth][j - 1 + currentHeight].isNotEmpty();
                     if (downNotEmpty) {
                         return true;
                     }
@@ -152,13 +152,13 @@ public class TetrisBoard {
         TetrisBlock[][] currentBlocks = current.getBlocks();
         for (int i = 0; i < currentBlocks.length; i++) {
             for (int j = 0; j < currentBlocks[i].length; j++) {
-                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                if (currentBlocks[i][j].isNotEmpty()) {
                     if (i + 1 + currentWidth == WIDTH) {
                         return true;
                     }
                     if (((i == currentBlocks[i].length - 1) ||
-                            (currentBlocks[i + 1][j] == TetrisBlockEmpty.get())) &&
-                            blocks[i + 1 + currentWidth][j + currentHeight] != TetrisBlockEmpty.get()) {
+                            (currentBlocks[i + 1][j].isEmpty())) &&
+                            blocks[i + 1 + currentWidth][j + currentHeight].isNotEmpty()) {
                         return true;
                     }
                 }
@@ -171,13 +171,13 @@ public class TetrisBoard {
         TetrisBlock[][] currentBlocks = current.getBlocks();
         for (int i = 0; i < currentBlocks.length; i++) {
             for (int j = 0; j < currentBlocks[i].length; j++) {
-                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                if (currentBlocks[i][j].isNotEmpty()) {
                     if (i + currentWidth == 0) {
                         return true;
                     }
                     if (((i == 0) ||
-                            (currentBlocks[i - 1][j] == TetrisBlockEmpty.get())) &&
-                            blocks[i - 1 + currentWidth][j + currentHeight] != TetrisBlockEmpty.get()) {
+                            (currentBlocks[i - 1][j].isEmpty())) &&
+                            blocks[i - 1 + currentWidth][j + currentHeight].isNotEmpty()) {
                         return true;
                     }
                 }
@@ -191,8 +191,8 @@ public class TetrisBoard {
             TetrisBlock[][] currentBlocks = current.getBlocks();
             for (int i = 0; i < currentBlocks.length; i++) {
                 for (int j = 0; j < currentBlocks[i].length; j++) {
-                    if (currentBlocks[i][j] != TetrisBlockEmpty.get() &&
-                            blocks[i + currentWidth][i + currentHeight] != TetrisBlockEmpty.get()) {
+                    if (currentBlocks[i][j].isNotEmpty() &&
+                            blocks[i + currentWidth][i + currentHeight].isNotEmpty()) {
                         return true;
                     }
                 }

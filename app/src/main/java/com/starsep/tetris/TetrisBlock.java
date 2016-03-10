@@ -121,7 +121,31 @@ public class TetrisBlock {
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
 
+    private static class TetrisBlockNoDraw extends TetrisBlock {
+        public TetrisBlockNoDraw() {
+            super(0.0f, 0.0f, 0.0f, 0.0f);
+        }
+
+        @Override
+        public void draw(float[] unused) {
+        }
+    }
+
+    private final static TetrisBlock wall = new TetrisBlockNoDraw();
+    public static TetrisBlock wall() {
+        return wall;
+    }
+
+    private final static TetrisBlock empty = new TetrisBlockNoDraw();
+    public static TetrisBlock empty() {
+        return empty;
+    }
+
     public boolean isEmpty() {
-        return false;
+        return this == empty;
+    }
+
+    public boolean isNotEmpty() {
+        return !isEmpty();
     }
 }

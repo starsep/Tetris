@@ -15,7 +15,7 @@ public abstract class Tetromino {
         for (int i = 0; i < blocks.length; i++) {
             blocks[i] = new TetrisBlock[size()];
             for (int j = 0; j < blocks[i].length; j++) {
-                blocks[i][j] = TetrisBlockEmpty.get();
+                blocks[i][j] = TetrisBlock.empty();
             }
         }
         int[] coords = coords();
