@@ -11,4 +11,7 @@ public class TetrisBlockEmpty extends TetrisBlock {
         return instance;
     }
 
+    @Override
+    public void draw(float[] mvpMatrix) {
+    }
 }

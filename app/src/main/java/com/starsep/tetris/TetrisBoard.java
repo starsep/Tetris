@@ -3,32 +3,34 @@ package com.starsep.tetris;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import java.sql.Time;
-import java.util.Random;
-
 public class TetrisBoard {
     private TetrisBlock[][] blocks;
     private static final int HEIGHT = 20;
     private static final int WIDTH = 10;
-    private static final int HEIGHT_HIDDEN = 4;
+    private static final int HEIGHT_HIDDEN = 5;
     private Tetromino current = null;
-    private int currentWidth = 6;
-    private int currentHeight = 16;
-    private int counter = 0;
-    private boolean clicked = false;
-    private Random tmpRandom;
+    private int currentWidth;
+    private int currentHeight;
+    private int frameCounter = 0;
     private long last = 0;
 
     private TetrisBoard() {
-        tmpRandom = new Random();
         blocks = new TetrisBlock[WIDTH][];
         for (int i = 0; i < WIDTH; i++) {
             blocks[i] = new TetrisBlock[HEIGHT + HEIGHT_HIDDEN];
-            for (int j = 0; j < HEIGHT + HEIGHT_HIDDEN; j++) {
+        }
+        clearBoard();
+        //blocks[3][3] = new TetrisBlock(1.0f, 0.3f, 0.5f, 1.0f);
+        spawnRandom();
+    }
+
+    private void clearBoard() {
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 1; j < HEIGHT + HEIGHT_HIDDEN; j++) {
                 blocks[i][j] = TetrisBlockEmpty.get();
             }
+            blocks[i][0] = TetrisBlockWall.get();
         }
-        setRandom();
     }
 
     private static TetrisBoard instance = new TetrisBoard();
@@ -41,13 +43,20 @@ public class TetrisBoard {
         TetrisBlock[][] currentBlocks = current.getBlocks();
         for (int i = 0; i < currentBlocks.length; i++) {
             for (int j = 0; j < currentBlocks[i].length; j++) {
-                blocks[currentWidth + i][currentHeight + j] = currentBlocks[i][j];
+                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                    blocks[currentWidth + i][currentHeight + j] = currentBlocks[i][j];
+                }
             }
         }
     }
 
     private void rotate() {
+        clear();
         current.rotate(false);
+        if (collisionRotation()) {
+            current.rotate(true);
+        }
+        update();
     }
 
     private void clear() {
@@ -55,87 +64,156 @@ public class TetrisBoard {
             TetrisBlock[][] currentBlocks = current.getBlocks();
             for (int i = 0; i < currentBlocks.length; i++) {
                 for (int j = 0; j < currentBlocks[i].length; j++) {
-                    blocks[currentWidth + i][currentHeight + j] = TetrisBlockEmpty.get();
+                    if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                        blocks[currentWidth + i][currentHeight + j] = TetrisBlockEmpty.get();
+                    }
                 }
             }
         }
     }
 
-    private void setRandom() {
-        clear();
+    private void spawnRandom() {
         current = TetrominoRandom.get();
+        currentWidth = 6;
+        currentHeight = 20;
+        update();
+        if (collisionDown()) {
+            clearBoard();
+            spawnRandom();
+        }
     }
 
     private void debug() {
-        if (counter % 100 == 0 || clicked) {
-            counter = 0;
-            clicked = false;
-            setRandom();
-            /*if (tmpRandom.nextInt(2) == 0) {
-                left();
-            } else {
-                right();
-            }*/
-        }
-        if (counter % 20 == 0) {
+        if (frameCounter % 20 == 0) {
             down();
-            rotate();
         }
     }
 
     public void draw(float[] VPMatrix) {
         float[] model = new float[16];
         float[] MVPMatrix = new float[16];
-        //last = System.currentTimeMillis();
+        TetrisBlock.initDraw();
         for (int i = 0; i < WIDTH; i++) {
-            for (int j = 0; j < HEIGHT; j++) {
+            for (int j = 1; j <= HEIGHT; j++) {
                 Matrix.setIdentityM(model, 0);
-                Matrix.translateM(model, 0, 30 + 60 * i + 150, 30 + 60 * j + 200, 0.0f);
-                Matrix.scaleM(model, 0, 30, 30, 1.0f);
+                Matrix.translateM(model, 0, 5 + 10 * i, -5 + 10 * j, 0.0f);
+                Matrix.scaleM(model, 0, 5, 5, 1.0f);
                 Matrix.multiplyMM(MVPMatrix, 0, VPMatrix, 0, model, 0);
                 blocks[i][j].draw(MVPMatrix);
             }
         }
-        //Log.d("Time:", String.valueOf(System.currentTimeMillis() - last));
-        //last = System.currentTimeMillis();
-        counter++;
+        TetrisBlock.endDraw();
+        frameCounter++;
         debug();
     }
 
+    public void showFps() {
+        Log.d("Fps:", String.valueOf(frameCounter - last));
+        last = frameCounter;
+    }
+
     public void onClick() {
-        clicked = true;
+        rotate();
     }
 
     public void left() {
-        clear();
-        currentWidth--;
-        if (currentWidth < 0) {
-            currentWidth = 0;
+        if (!collisionLeft()) {
+            clear();
+            currentWidth--;
+            update();
         }
-        update();
     }
 
     public void right() {
-        clear();
-        currentWidth++;
-        if (currentWidth > 6) {
-            currentWidth = 6;
+        if (!collisionRight()) {
+            clear();
+            currentWidth++;
+            update();
         }
-        update();
     }
 
+    private boolean collisionDown() {
+        TetrisBlock[][] currentBlocks = current.getBlocks();
+        for (int i = 0; i < currentBlocks.length; i++) {
+            for (int j = 0; j < currentBlocks[i].length; j++) {
+                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                    boolean downNotEmpty = ((j == 0) ||
+                            (currentBlocks[i][j - 1] == TetrisBlockEmpty.get())) &&
+                            blocks[i + currentWidth][j - 1 + currentHeight] != TetrisBlockEmpty.get();
+                    if (downNotEmpty) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean collisionRight() {
+        TetrisBlock[][] currentBlocks = current.getBlocks();
+        for (int i = 0; i < currentBlocks.length; i++) {
+            for (int j = 0; j < currentBlocks[i].length; j++) {
+                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                    if (i + 1 + currentWidth == WIDTH) {
+                        return true;
+                    }
+                    if (((i == currentBlocks[i].length - 1) ||
+                            (currentBlocks[i + 1][j] == TetrisBlockEmpty.get())) &&
+                            blocks[i + 1 + currentWidth][j + currentHeight] != TetrisBlockEmpty.get()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean collisionLeft() {
+        TetrisBlock[][] currentBlocks = current.getBlocks();
+        for (int i = 0; i < currentBlocks.length; i++) {
+            for (int j = 0; j < currentBlocks[i].length; j++) {
+                if (currentBlocks[i][j] != TetrisBlockEmpty.get()) {
+                    if (i + currentWidth == 0) {
+                        return true;
+                    }
+                    if (((i == 0) ||
+                            (currentBlocks[i - 1][j] == TetrisBlockEmpty.get())) &&
+                            blocks[i - 1 + currentWidth][j + currentHeight] != TetrisBlockEmpty.get()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean collisionRotation() {
+        TetrisBlock[][] currentBlocks = current.getBlocks();
+        for (int i = 0; i < currentBlocks.length; i++) {
+            for (int j = 0; j < currentBlocks[i].length; j++) {
+                if (currentBlocks[i][j] != TetrisBlockEmpty.get() &&
+                        blocks[i + currentWidth][i + currentHeight] != TetrisBlockEmpty.get()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
     public void down() {
+        if (collisionDown()) {
+            spawnRandom();
+            return;
+        }
         clear();
         currentHeight--;
-        if (currentHeight < 0) {
-            currentHeight = 16;
-        }
         update();
     }
 
     public void top() {
-        clear();
-        currentHeight = 0;
-        update();
+        while (!collisionDown()) {
+            down();
+        }
     }
 }

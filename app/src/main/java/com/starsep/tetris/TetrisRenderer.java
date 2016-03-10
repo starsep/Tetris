@@ -3,6 +3,8 @@ package com.starsep.tetris;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -17,6 +19,9 @@ public class TetrisRenderer implements GLSurfaceView.Renderer {
     private final float[] ProjectionMatrix = new float[16];
     private final float[] ViewMatrix = new float[16];
 
+    private Handler fpsHandler;
+    private Runnable fpsShow;
+
     private TetrisRenderer() {
         super();
     }
@@ -25,8 +30,18 @@ public class TetrisRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        GLES20.glClearColor(0.5f, 0.2f, 0.1f, 1.0f);
+        GLES20.glClearColor(0.0f, 0.1f, 0.3f, 1.0f);
         board = TetrisBoard.board();
+        fpsShow = new Runnable() {
+            @Override
+            public void run() {
+                board.showFps();
+                fpsHandler.postDelayed(this, 1000);
+            }
+        };
+
+        fpsHandler = new Handler(Looper.getMainLooper());
+        fpsHandler.postDelayed(fpsShow, 0);
     }
 
     @Override
@@ -56,7 +71,7 @@ public class TetrisRenderer implements GLSurfaceView.Renderer {
         //Matrix.multiplyMM(VPMatrix, 0, ProjectionMatrix, 0, ViewMatrix, 0);
 
         Matrix.setIdentityM(VPMatrix, 0);
-        Matrix.orthoM(VPMatrix, 0, 0.0f, 900f, 0, 1600f, -1.0f, 1.0f);
+        Matrix.orthoM(VPMatrix, 0, 0.0f, 100f, 0, 200f, -1.0f, 1.0f);
         board.draw(VPMatrix);
     }
 
