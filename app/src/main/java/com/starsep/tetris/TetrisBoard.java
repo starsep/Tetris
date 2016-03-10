@@ -192,7 +192,7 @@ public class TetrisBoard {
             for (int i = 0; i < currentBlocks.length; i++) {
                 for (int j = 0; j < currentBlocks[i].length; j++) {
                     if (currentBlocks[i][j].isNotEmpty() &&
-                            blocks[i + currentWidth][i + currentHeight].isNotEmpty()) {
+                            blocks[i + currentWidth][j + currentHeight].isNotEmpty()) {
                         return true;
                     }
                 }
