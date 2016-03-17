@@ -149,4 +149,8 @@ public class TetrisBlock {
     public boolean isNotEmpty() {
         return !isEmpty();
     }
+
+    public boolean isWall() {
+        return this == wall;
+    }
 }

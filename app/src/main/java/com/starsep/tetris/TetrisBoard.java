@@ -212,11 +212,40 @@ public class TetrisBoard {
         clear();
         currentHeight--;
         update();
+        checkCollapse();
     }
 
     public void top() {
         while (!collisionDown()) {
             down();
         }
+    }
+
+    private boolean levelCollapse(int q) {
+        for (int i = 0; i < WIDTH; i++) {
+            if (blocks[i][q].isEmpty() || blocks[i][q].isWall()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void collapse(int q) {
+        for (int i = q; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                blocks[j][i] = blocks[j][i + 1];
+            }
+        }
+    }
+
+    private void checkCollapse() {
+        clear();
+        for(int i = 0; i < HEIGHT; i++) {
+            if (levelCollapse(i)) {
+                collapse(i);
+                i--;
+            }
+        }
+        update();
     }
 }
